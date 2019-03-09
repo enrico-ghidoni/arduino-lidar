@@ -30,8 +30,9 @@ import open3d
 parser = argparse.ArgumentParser()
 parser.add_argument('--serial-port', dest='serial_port', default=None, help='serial port the Arduino is connected to, if not specified the first detected port is used')
 parser.add_argument('--baud-rate', dest='baud_rate', default=115200)
+parser.add_argument('--update-interval', dest='update_interval', default=100, help='points to gather before updating point cloud rendering')
 
-def run(serial_port=None, baud_rate=115200):
+def run(serial_port=None, baud_rate=115200, update_interval=100):
     if serial_port is None:
         port = serial_ports()[0]
     else:
@@ -51,6 +52,9 @@ def run(serial_port=None, baud_rate=115200):
     pcd = open3d.PointCloud()
     pcd.points = open3d.Vector3dVector(points)
 
+    # initialize counter for render update
+    update_counter = 1
+
     # create open3d visualizer and bind it to the point cloud
     vis = open3d.Visualizer()
     vis.create_window()
@@ -59,14 +63,20 @@ def run(serial_port=None, baud_rate=115200):
     while line != '0 181 181':
         # convert read line to [x, y, z]
         point = get_xyz(line)
-        print(point)
         pcd.points.append(point)
 
-        # update point cloud visualizer
-        vis.add_geometry(pcd)
-        vis.update_geometry()
-        vis.poll_events()
-        vis.update_renderer()
+        # increment counter
+        update_counter += 1
+
+        if update_counter > update_interval:
+            # update point cloud visualizer
+            vis.add_geometry(pcd)
+            vis.update_geometry()
+            vis.poll_events()
+            vis.update_renderer()
+
+            # reset counter
+            update_counter = 1
 
         line = get_line(ser)
     
