@@ -47,7 +47,7 @@ setuptools.setup(
     ],
     license = 'GNU General Public License Version 3',
     python_requires = '>=3.6,<4',
-    install_require = [
+    install_requires = [
         'open3d-python>=0.5.0,<1',
         'numpy>=1.16.2,<2',
         'pyserial>=3.4,<4',
