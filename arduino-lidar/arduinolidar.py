@@ -70,7 +70,8 @@ def run(serial_port=None, baud_rate=115200):
 
         line = get_line(ser)
     
-    # vis.destroy_window()
+    input('Press \'enter\' to continue')
+    vis.destroy_window()
 
 def serial_ports():
     if sys.platform.startswith('win'):
