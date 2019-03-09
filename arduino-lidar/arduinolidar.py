@@ -55,9 +55,13 @@ def run(serial_port=None, baud_rate=115200, update_interval=100):
     # initialize counter for render update
     update_counter = 1
 
+    # create axis mesh
+    mesh_frame = open3d.create_mesh_coordinate_frame(size = 10, origin = [0, 0, 0])
+
     # create open3d visualizer and bind it to the point cloud
     vis = open3d.Visualizer()
     vis.create_window()
+    vis.add_geometry(mesh_frame)
 
     line = get_line(ser)
     while line != '0 181 181':
